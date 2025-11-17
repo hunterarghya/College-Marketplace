@@ -1,0 +1,71 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pkl
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# Environment variables
+*.env
+
+# VSCode
+.vscode/
+
+# Byte-compiled / optimized / DLL files
+*.egg-info/
+*.egg
+dist/
+build/
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Logs
+*.log
+logs/
+log/
+
+# Mac / Windows
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+*.pid.lock
+
+# FastAPI related
+*.sqlite3
+
+# Jupyter
+.ipynb_checkpoints/
+
+# MyPy / Pyright
+.mypy_cache/
+.pytype/
+.pyre/
+
+# Idea / JetBrains
+.idea/
+
+# Others
+*.bak
