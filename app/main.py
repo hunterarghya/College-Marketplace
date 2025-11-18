@@ -6,6 +6,7 @@ from fastapi.templating import Jinja2Templates
 
 from app import schemas, model, crud
 from app.database import get_db, engine, Base
+from app.schemas import Post_item, PostUpdate
 
 from app.images import imagekit
 from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
@@ -126,3 +127,28 @@ def get_feed(db: Session = Depends(get_db)):
     if not posts:
         raise HTTPException(status_code=404, detail= "post not found")
     return posts
+
+
+@app.delete("/post/{post_id}")
+def delete_post(post_id: str, db: Session = Depends(get_db)):
+    post_uuid = uuid.UUID(post_id)
+
+    result = crud.delete_post(db, post_uuid)
+
+    if not result:
+        raise HTTPException(status_code=404, detail="Post not found")
+    
+
+    return {"message": "Post deleted successfully"}
+
+
+@app.patch("/post/{post_id}")
+def edit_post(post_id: str, data: PostUpdate, db: Session = Depends(get_db)):
+    post_uuid = uuid.UUID(post_id)
+
+    updated_post = crud.update_post(db, post_uuid, data)
+
+    if not updated_post:
+        raise HTTPException(status_code=404, detail="Post not found")
+
+    return updated_post
