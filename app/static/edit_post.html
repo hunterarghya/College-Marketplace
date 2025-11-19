@@ -1,0 +1,83 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Edit Post</title>
+  </head>
+  <body>
+    <button onclick="location.href='/static/feed.html'">Back</button>
+    <h1>Edit</h1>
+    <form id="f">
+      <label>Title: <input name="title" /></label><br />
+      <label>Description: <input name="description" /></label><br />
+      <label>Price: <input name="price" type="number" /></label><br />
+      <label>Location: <input name="location" /></label><br />
+      <button type="submit">Save</button>
+    </form>
+    <p id="msg"></p>
+
+    <script>
+      const apiBase = "";
+      function getQueryParam(k) {
+        return new URLSearchParams(location.search).get(k);
+      }
+      function authHeaders() {
+        const t = localStorage.getItem("token");
+        return t
+          ? { Authorization: "Bearer " + t, "Content-Type": "application/json" }
+          : {};
+      }
+
+      async function load() {
+        const id = getQueryParam("id");
+        if (!id) return;
+        // Pull feed and prefill
+        const res = await fetch(apiBase + "/feed", {
+          headers: { ...authHeaders() },
+        });
+        const posts = await res.json();
+        const p =
+          Array.isArray(posts) && posts.find((x) => (x.id || x.uuid) == id);
+        if (!p) {
+          document.getElementById("msg").innerText = "Post not found";
+          return;
+        }
+        const form = document.getElementById("f");
+        form.title.value = p.title || "";
+        form.description.value = p.description || "";
+        form.price.value = p.price || "";
+        form.location.value = p.location || "";
+        form.dataset.id = id;
+      }
+
+      document.getElementById("f").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const id = document.getElementById("f").dataset.id;
+        const payload = {
+          title: e.target.title.value || null,
+          description: e.target.description.value || null,
+          price: e.target.price.value ? Number(e.target.price.value) : null,
+          location: e.target.location.value || null,
+        };
+        // remove nulls to patch only present
+        Object.keys(payload).forEach((k) =>
+          payload[k] === null ? delete payload[k] : null
+        );
+
+        const res = await fetch(apiBase + "/post/" + encodeURIComponent(id), {
+          method: "PATCH",
+          headers: authHeaders(),
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) {
+          const j = await res.json().catch(() => ({ detail: res.statusText }));
+          document.getElementById("msg").innerText =
+            "Update failed: " + (j.detail || res.statusText);
+          return;
+        }
+        document.getElementById("msg").innerText = "Updated";
+      });
+      load();
+    </script>
+  </body>
+</html>

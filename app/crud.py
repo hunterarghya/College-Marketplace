@@ -1,36 +1,14 @@
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 from app import model
 from datetime import datetime
 
 from app.images import imagekit
 from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 
-from fastapi import HTTPException
+from app.auth import get_current_user, current_active_user
+
+from fastapi import HTTPException, Depends
 import uuid
-
-
-# def create_post(db: Session, user_id:str, title, description, price, location, url, file_type, file_name):
-        
-    
-#     post = model.PostItem(
-#         id=uuid.uuid4(),
-#         user_id=user_id,               # ← FIXED
-#         title=title,
-#         description=description,
-#         price=price,
-#         location=location,
-#         url=url,
-#         file_type=file_type,
-#         file_name=file_name
-#     )
-#     try:
-#         db.add(post)
-#         db.commit()
-#         db.refresh(post)
-#         return post
-#     except Exception as e:
-#         db.rollback()
-#         raise HTTPException(status_code=500, detail=str(e))
 
 def create_post(
     db: Session,
@@ -64,9 +42,8 @@ def create_post(
         raise HTTPException(status_code=500, detail=str(e))
 
 def get_feed(db: Session):
-    return(
-        db.query(model.PostItems).filter(model.PostItems.status=="available").all()
-    )
+    return db.query(model.PostItems).options(joinedload(model.PostItems.user)).filter(model.PostItems.status=="available").all()
+    
 
 def delete_post(db: Session, post_uuid):
     post = db.query(model.PostItems).filter(model.PostItems.id == post_uuid).first()

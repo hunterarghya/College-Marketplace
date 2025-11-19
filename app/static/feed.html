@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Marketplace</title>
+  </head>
+  <body>
+    <div>
+      <button id="logoutBtn">Logout</button>
+      <button id="sellBtn">Sell</button>
+      <button id="myPostsBtn">My Items</button>
+      <button id="profileBtn">Profile</button>
+    </div>
+
+    <h1>Marketplace</h1>
+    <div id="posts"></div>
+
+    <script>
+      const apiBase = "";
+
+      function authHeaders() {
+        const t = localStorage.getItem("token");
+        return t ? { Authorization: "Bearer " + t } : {};
+      }
+
+      document.getElementById("logoutBtn").onclick = () => {
+        localStorage.removeItem("token");
+        location.href = "/static/login.html";
+      };
+      document.getElementById("sellBtn").onclick = () =>
+        (location.href = "/static/upload.html");
+      document.getElementById("myPostsBtn").onclick = () =>
+        (location.href = "/static/my_posts.html");
+      document.getElementById("profileBtn").onclick = () =>
+        (location.href = "/static/profile.html");
+
+      async function loadFeed() {
+        // ---- 1. GET CURRENT USER ----
+        const meRes = await fetch("/auth/me", { headers: authHeaders() });
+        if (!meRes.ok) {
+          alert("Not authenticated. Please login.");
+          location.href = "/static/login.html";
+          return;
+        }
+        const me = await meRes.json();
+        const myId = me.id;
+
+        // ---- 2. LOAD POSTS ----
+        const res = await fetch(apiBase + "/feed", {
+          headers: authHeaders(),
+        });
+
+        if (!res.ok) {
+          alert("Unable to load feed");
+          return;
+        }
+
+        const posts = await res.json();
+        const container = document.getElementById("posts");
+        container.innerHTML = "";
+
+        // ---- 3. RENDER FEED POSTS ----
+        posts.forEach((p) => {
+          // Backend returns: user_id, but also p.user object
+          // Hide my own posts:
+          if (p.user_id === myId) return;
+
+          const sellerName = p.user?.name || p.user?.email || "Unknown";
+          const sellernum = p.user?.phone || "Unknown";
+
+          const div = document.createElement("div");
+          div.style.border = "1px solid #000";
+          div.style.margin = "8px";
+          div.style.padding = "8px";
+
+          div.innerHTML = `
+        <h3>${p.title || "Untitled"}</h3>
+        <div>By: ${sellerName}</div>
+        ${p.url ? `<img src="${p.url}" style="max-width:200px;">` : ""}
+        <p>${p.description || ""}</p>
+        <div>Price: ${p.price ?? ""}</div>
+        <div>Location: ${p.location ?? ""}</div>
+        <div>Phone: ${sellernum}</div>
+        <div>Created: ${p.created_at ?? ""}</div>
+        <div>Status: ${p.status ?? "unknown"}</div>
+      `;
+
+          // BUY BUTTON
+          const buyBtn = document.createElement("button");
+          buyBtn.innerText = "Buy";
+          buyBtn.onclick = () => buyPost(p.id);
+          div.appendChild(buyBtn);
+
+          container.appendChild(div);
+        });
+      }
+
+      async function buyPost(postId) {
+        if (!postId) return alert("Invalid post ID");
+
+        const res = await fetch(apiBase + "/generate_upi_link/" + postId, {
+          headers: authHeaders(),
+        });
+
+        if (!res.ok) {
+          alert("Failed generating UPI link");
+          return;
+        }
+
+        const data = await res.json();
+        if (!data.upi_link) return alert("No UPI link from server");
+
+        window.location.href = data.upi_link;
+
+        setTimeout(() => {
+          if (confirm("After completing payment, click OK to confirm.")) {
+            confirmPayment(postId);
+          }
+        }, 1500);
+      }
+
+      async function confirmPayment(postId) {
+        const res = await fetch(apiBase + "/confirm_payment/" + postId, {
+          method: "POST",
+          headers: authHeaders(),
+        });
+        if (!res.ok) return alert("Payment confirmation failed");
+        alert("Payment confirmed!");
+        loadFeed();
+      }
+
+      loadFeed();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Profile</title>
+  </head>
+  <body>
+    <button onclick="location.href='/static/feed.html'">Back</button>
+    <h1>Profile</h1>
+
+    <div id="info" style="font-size: 18px; line-height: 1.6"></div>
+
+    <script>
+      const apiBase = "";
+      function authHeaders() {
+        const t = localStorage.getItem("token");
+        return t ? { Authorization: "Bearer " + t } : {};
+      }
+
+      async function load() {
+        const res = await fetch(apiBase + "/auth/me", {
+          headers: authHeaders(),
+        });
+
+        if (!res.ok) {
+          document.getElementById("info").innerText = "Failed to load profile.";
+          return;
+        }
+
+        const me = await res.json();
+
+        // Render nicely formatted profile info
+        const html = `
+          <div><strong>ID:</strong> ${me.id}</div>
+          <div><strong>Name:</strong> ${me.name || "N/A"}</div>
+          <div><strong>Email:</strong> ${me.email || "N/A"}</div>
+          <div><strong>Phone:</strong> ${me.phone || "N/A"}</div>
+          <div><strong>UPI ID:</strong> ${me.upi_id || "N/A"}</div>
+        `;
+
+        document.getElementById("info").innerHTML = html;
+      }
+
+      load();
+    </script>
+  </body>
+</html>

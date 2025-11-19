@@ -1,43 +1,9 @@
-# from pydantic import BaseModel
-# from typing import Optional, List
-# import uuid
-# from fastapi_users import schemas
-
-# class Post_item(BaseModel):
-#     title: str
-#     description: str
-#     price: int
-#     location: str
-
-# class PostUpdate(BaseModel):
-#     title: Optional[str] = None
-#     description: Optional[str] = None
-#     price: Optional[int] = None
-#     location: Optional[str] = None
-
-
-# class UserRead(schemas.BaseUser[uuid.UUID]):
-#     name: str
-#     phone: str
-#     upi_id: str
-
-# class UserCreate(schemas.BaseUserCreate):
-#     name: str
-#     phone: str
-#     upi_id: str
-
-# class UserUpdate(schemas.BaseUserUpdate):
-#     name: Optional[str] = None
-#     phone: Optional[str] = None
-#     upi_id: Optional[str] = None
-
-# app/schemas.py
 from pydantic import BaseModel, EmailStr
 from typing import Optional
 import uuid
 from datetime import datetime
 
-# ---- Post schemas (if you already have them, keep them) ----
+# Post schemas
 class Post_item(BaseModel):
     title: str
     description: str
@@ -50,7 +16,7 @@ class PostUpdate(BaseModel):
     price: Optional[int] = None
     location: Optional[str] = None
 
-# ---- User schemas ----
+# User schemas
 class UserCreate(BaseModel):
     email: EmailStr
     password: str

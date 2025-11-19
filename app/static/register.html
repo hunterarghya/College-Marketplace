@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Register</title>
+  </head>
+  <body>
+    <h1>College Marketplace</h1>
+    <h2>Register</h2>
+    <label>Email: <input id="email" type="email" /></label><br />
+    <label>Password: <input id="password" type="password" /></label><br />
+    <label>Name: <input id="name" type="text" /></label><br />
+    <label>Phone: <input id="phone" type="text" /></label><br />
+    <label>UPI ID: <input id="upi" type="text" /></label><br />
+    <button id="registerBtn">Register</button>
+    <button id="toLogin">Back to Login</button>
+    <p id="msg"></p>
+
+    <script>
+      const apiBase = "";
+
+      document.getElementById("toLogin").addEventListener("click", () => {
+        location.href = "/static/login.html";
+      });
+
+      document
+        .getElementById("registerBtn")
+        .addEventListener("click", async () => {
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+          const name = document.getElementById("name").value;
+          const phone = document.getElementById("phone").value;
+          const upi_id = document.getElementById("upi").value;
+
+          const res = await fetch(apiBase + "/auth/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password, name, phone, upi_id }),
+          });
+
+          if (!res.ok) {
+            const j = await res
+              .json()
+              .catch(() => ({ detail: res.statusText }));
+            document.getElementById("msg").innerText =
+              "Register failed: " + (j.detail || res.statusText);
+            return;
+          }
+          // auto login after register (optional): store token not returned by register normally.
+          document.getElementById("msg").innerText =
+            "Registered. Please login.";
+        });
+    </script>
+  </body>
+</html>

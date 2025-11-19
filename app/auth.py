@@ -46,7 +46,7 @@ def decode_access_token(token: str):
     except jwt.PyJWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
-# --- user CRUD helpers -----------------------------------
+# --- user CRUD helpers -------------------------------------------------
 def get_user_by_email(db: Session, email: str):
     return db.query(model.User).filter(model.User.email == email).first()
 
@@ -73,7 +73,7 @@ def create_user(db: Session, user_in: schemas.UserCreate):
     db.refresh(user)
     return user
 
-# --- routes -----------------------------------------------
+# --- routes -------------------------------------
 @router.post("/register", response_model=schemas.UserRead, status_code=201)
 def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
     created = create_user(db, user)
@@ -90,7 +90,6 @@ def login(form_data: schemas.UserLogin, db: Session = Depends(get_db)):
     token = create_access_token(subject=str(user.id))
     return {"access_token": token, "token_type": "bearer"}
 
-# Also support OAuth2PasswordRequestForm if you want to use /auth/jwt/login form:
 @router.post("/jwt/login", response_model=schemas.Token)
 def jwt_login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     # OAuth2 form uses "username" for email
@@ -100,7 +99,7 @@ def jwt_login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = De
     token = create_access_token(subject=str(user.id))
     return {"access_token": token, "token_type": "bearer"}
 
-# --- dependency to get current user --------------------------------
+# --- dependency to get current user -----------------------
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 security = HTTPBearer()
 
@@ -117,6 +116,11 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
         raise HTTPException(status_code=403, detail="Inactive user")
     return user
 
-# convenience dependency for "active user"
+# dependency for "active user"
 def current_active_user(user = Depends(get_current_user)):
+    return user
+
+
+@router.get("/me", response_model=schemas.UserRead)
+def me(user = Depends(current_active_user)):
     return user
