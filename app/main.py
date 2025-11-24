@@ -1,4 +1,5 @@
-from fastapi import FastAPI, HTTPException, Depends, File, UploadFile, Form
+from fastapi import FastAPI, HTTPException, Depends, File, UploadFile, Form, Request
+from fastapi.templating import Jinja2Templates
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 import shutil
@@ -15,10 +16,14 @@ from imagekitio.models.UploadFileRequestOptions import UploadFileRequestOptions
 
 from urllib.parse import quote
 from app.auth import get_current_user
-from app.model import PostItems
+# from app.auth import razorpayx
+from app.model import PostItems, User
 
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, HTMLResponse
+
+from dotenv import load_dotenv
+import razorpay
 
 
 Base.metadata.create_all(bind=engine)
@@ -166,65 +171,233 @@ def edit_post(
 
 
 
-@app.get("/generate_upi_link/{post_id}")
-def generate_upi_link(
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+
+# UPI
+# PAYMENT
+# USING
+# URL
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+
+
+
+
+
+
+
+# @app.get("/generate_upi_link/{post_id}")
+# def generate_upi_link(
+#     post_id: str,
+#     db: Session = Depends(get_db),
+#     current_user = Depends(get_current_user)
+# ):
+#     post_uuid = uuid.UUID(post_id)
+
+#     post = db.query(PostItems).filter(
+#         PostItems.id == post_uuid,
+#         PostItems.status == "available"
+#     ).first()
+
+#     if not post:
+#         raise HTTPException(status_code=404, detail="Post not found or not available")
+
+#     seller = post.user                    
+#     buyer = current_user                  
+
+#     # upi_url = (
+#     #     f"upi://pay?"
+#     #     f"pa={seller.upi_id}&"
+#     #     f"pn={quote(seller.name)}&"
+#     #     f"tn=Payment+for+{quote(post.title)}&"
+#     #     f"am={post.price}&"
+#     #     f"cu=INR"
+#     # )
+
+#     upi_url = (
+#         "upi://pay?"
+#         f"pa={quote(seller.upi_id)}&"
+#         f"pn={quote(seller.name)}&"
+#         f"am={post.price}&"
+#         f"tn={quote('Payment for ' + post.title)}&"
+#         f"cu=INR"
+#     )
+
+#     return {"upi_link": upi_url}
+
+
+
+# @app.post("/confirm_payment/{post_id}")
+# def confirm_payment(
+#     post_id: str,
+#     db: Session = Depends(get_db),
+#     current_user = Depends(get_current_user)
+# ):
+#     post_uuid = uuid.UUID(post_id)
+
+#     post = db.query(PostItems).filter(PostItems.id == post_uuid).first()
+
+#     if not post:
+#         raise HTTPException(status_code=404, detail="Post not found")
+
+#     if post.status == "sold":
+#         raise HTTPException(status_code=400, detail="Already sold")
+
+#     post.status = "sold"
+#     db.commit()
+#     db.refresh(post)
+
+#     return {"message": "Payment confirmed", "post_id": post_id}
+
+
+
+
+
+
+
+
+
+
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+
+# RAZORPAY
+# PAYMENT
+# GATEWAY
+# INTEGRATION
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+# ...............................
+
+
+load_dotenv()
+
+RAZORPAY_KEY_ID = os.getenv("RAZORPAY_KEY_ID")
+RAZORPAY_KEY_SECRET = os.getenv("RAZORPAY_KEY_SECRET")
+
+razorpay_client = razorpay.Client(auth=(RAZORPAY_KEY_ID, RAZORPAY_KEY_SECRET))
+
+templates = Jinja2Templates(directory="app/static")
+
+
+@app.get("/create_order/{post_id}")
+def create_order(
     post_id: str,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    user=Depends(current_active_user)
 ):
     post_uuid = uuid.UUID(post_id)
 
     post = db.query(PostItems).filter(
-        PostItems.id == post_uuid,
+        PostItems.id == post_uuid, 
         PostItems.status == "available"
     ).first()
 
     if not post:
-        raise HTTPException(status_code=404, detail="Post not found or not available")
+        raise HTTPException(status_code=404, detail="Post not found or unavailable")
 
-    seller = post.user                    
-    buyer = current_user                  
+    amount_in_paisa = int(post.price * 100)
 
-    # upi_url = (
-    #     f"upi://pay?"
-    #     f"pa={seller.upi_id}&"
-    #     f"pn={quote(seller.name)}&"
-    #     f"tn=Payment+for+{quote(post.title)}&"
-    #     f"am={post.price}&"
-    #     f"cu=INR"
-    # )
+    order = razorpay_client.order.create({
+        "amount": amount_in_paisa,
+        "currency": "INR",
+        "payment_capture": 1
+    })
 
-    upi_url = (
-        "upi://pay?"
-        f"pa={quote(seller.upi_id)}&"
-        f"pn={quote(seller.name)}&"
-        f"am={post.price}&"
-        f"tn={quote('Payment for ' + post.title)}&"
-        f"cu=INR"
-    )
-
-    return {"upi_link": upi_url}
+    return {
+        "order_id": order["id"],
+        "amount": amount_in_paisa,
+        "currency": "INR",
+        "key": RAZORPAY_KEY_ID,
+        "post_id": post_id,
+        "title": post.title
+    }
 
 
-
-@app.post("/confirm_payment/{post_id}")
-def confirm_payment(
-    post_id: str,
+@app.post("/verify_payment")
+async def verify_payment(
+    request: Request,
     db: Session = Depends(get_db),
-    current_user = Depends(get_current_user)
+    user=Depends(current_active_user)
 ):
+    body = await request.json()
+
+    order_id = body.get("razorpay_order_id")
+    payment_id = body.get("razorpay_payment_id")
+    signature = body.get("razorpay_signature")
+    post_id = body.get("post_id")
+
+    if not (order_id and payment_id and signature and post_id):
+        raise HTTPException(status_code=400, detail="Missing payment details")
+
+    try:
+        razorpay_client.utility.verify_payment_signature({
+            "razorpay_order_id": order_id,
+            "razorpay_payment_id": payment_id,
+            "razorpay_signature": signature
+        })
+    except:
+        return {"status": "failed", "message": "Signature verification failed"}
+
     post_uuid = uuid.UUID(post_id)
 
-    post = db.query(PostItems).filter(PostItems.id == post_uuid).first()
-
+    post = db.query(PostItems).filter_by(id=post_uuid).first()
     if not post:
         raise HTTPException(status_code=404, detail="Post not found")
 
-    if post.status == "sold":
-        raise HTTPException(status_code=400, detail="Already sold")
-
     post.status = "sold"
     db.commit()
-    db.refresh(post)
 
-    return {"message": "Payment confirmed", "post_id": post_id}
+
+    # # --------------------------(PAYOUT) --------------------------
+    # # --------------------------(PAYOUT) --------------------------
+    # # --------------------------(PAYOUT) --------------------------
+    # # --------------------------(PAYOUT) --------------------------
+    # seller = db.query(User).filter(User.id == post.user_id).first()
+
+    # if not seller.fund_account_id:
+    #     raise HTTPException(status_code=500, detail="Seller payout account missing")
+
+    # payout_data = {
+    #     "account_number": os.getenv("RAZORPAYX_ACCOUNT_NUMBER"),
+    #     "fund_account_id": seller.fund_account_id,
+    #     "amount": int(post.price * 100),  # Razorpay takes amount in paise
+    #     "currency": "INR",
+    #     "mode": "UPI",
+    #     "purpose": "payout",
+    #     "queue_if_low_balance": True,
+    #     "reference_id": str(post.id)
+    # }
+
+    # payout = razorpayx.payout.create(payout_data)
+    # # -------------------------------------------------------------------
+    # # -------------------------------------------------------------------
+    # # -------------------------------------------------------------------
+    # # -------------------------------------------------------------------
+    # # -------------------------------------------------------------------
+
+    return {"status": "success", "message": "Payment verified", "post_id": post_id}

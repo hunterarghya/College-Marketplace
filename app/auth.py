@@ -1,4 +1,3 @@
-# app/auth/auth.py
 import os
 from dotenv import load_dotenv
 load_dotenv()
@@ -15,6 +14,8 @@ from passlib.context import CryptContext
 from app.database import get_db
 from app import model, schemas
 
+import razorpay
+
 # Config
 JWT_SECRET = os.getenv("JWT_SECRET") or "CHANGE_ME_SECRET"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES") or 60)
@@ -22,6 +23,18 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES") or 60
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+
+# # -------------------- (RAZORPAYX CLIENT) ----------------------------
+# RAZORPAYX_KEY_ID = os.getenv("RAZORPAYX_KEY_ID")
+# RAZORPAYX_KEY_SECRET = os.getenv("RAZORPAYX_KEY_SECRET")
+
+# razorpayx = razorpay.Client(auth=(RAZORPAYX_KEY_ID, RAZORPAYX_KEY_SECRET))
+# # ---------------------------------------------------------------------------
+
+
+
 
 # --- helper utils -----------------------------------------
 def hash_password(password: str) -> str:
@@ -71,6 +84,42 @@ def create_user(db: Session, user_in: schemas.UserCreate):
     db.add(user)
     db.commit()
     db.refresh(user)
+
+    # # ----------------------------------------------------
+    # # ----------------------------------------------------
+    # # ----------------------------------------------------
+    # # ----------------------------------------------------
+    # # Create Razorpay Contact
+    # contact = razorpayx.contact.create({
+    #     "name": user.name,
+    #     "email": user.email,
+    #     "contact": user.phone,
+    #     "type": "vendor"
+    # })
+
+    # # Create Fund Account (UPI)
+    # fund_account = razorpayx.fund_account.create({
+    #     "contact_id": contact["id"],
+    #     "account_type": "vpa",
+    #     "vpa": {
+    #         "address": user.upi_id
+    #     }
+    # })
+
+    # # Save IDs to database
+    # user.razorpay_contact_id = contact["id"]
+    # user.fund_account_id = fund_account["id"]
+
+    # db.commit()
+    # db.refresh(user)
+    # # ---------------------------------------------------------------------------
+    # # ---------------------------------------------------------------------------
+    # # ---------------------------------------------------------------------------
+    # # ---------------------------------------------------------------------------
+    # # ---------------------------------------------------------------------------
+
+
+
     return user
 
 # --- routes -------------------------------------

@@ -61,7 +61,6 @@
 
         // ---- 3. RENDER FEED POSTS ----
         posts.forEach((p) => {
-          // Backend returns: user_id, but also p.user object
           // Hide my own posts:
           if (p.user_id === myId) return;
 
@@ -95,29 +94,47 @@
         });
       }
 
-      async function buyPost(postId) {
-        if (!postId) return alert("Invalid post ID");
+      // **********************************************************************************************************
 
-        const res = await fetch(apiBase + "/generate_upi_link/" + postId, {
+      // async function buyPost(postId) {
+      //   if (!postId) return alert("Invalid post ID");
+
+      //   const res = await fetch(apiBase + "/generate_upi_link/" + postId, {
+      //     headers: authHeaders(),
+      //   });
+
+      //   if (!res.ok) {
+      //     alert("Failed generating UPI link");
+      //     return;
+      //   }
+
+      //   const data = await res.json();
+      //   if (!data.upi_link) return alert("No UPI link from server");
+
+      //   window.location.href = data.upi_link;
+
+      //   setTimeout(() => {
+      //     if (confirm("After completing payment, click OK to confirm.")) {
+      //       confirmPayment(postId);
+      //     }
+      //   }, 1500);
+      // }
+
+      // **********************************************************************************************************
+
+      async function buyPost(postId) {
+        const res = await fetch("/create_order/" + postId, {
           headers: authHeaders(),
         });
 
-        if (!res.ok) {
-          alert("Failed generating UPI link");
-          return;
-        }
-
         const data = await res.json();
-        if (!data.upi_link) return alert("No UPI link from server");
 
-        window.location.href = data.upi_link;
+        const url = `/static/payment.html?order_id=${data.order_id}&amount=${data.amount}&key=${data.key}&post_id=${postId}&title=${encodeURIComponent(data.title)}`;
 
-        setTimeout(() => {
-          if (confirm("After completing payment, click OK to confirm.")) {
-            confirmPayment(postId);
-          }
-        }, 1500);
+        window.location.href = url;
       }
+
+      // **********************************************************************************************************
 
       async function confirmPayment(postId) {
         const res = await fetch(apiBase + "/confirm_payment/" + postId, {

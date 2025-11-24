@@ -14,3 +14,6 @@ DATABASE_URL=postgresql+psycopg://user:password@db:5432/dbname
 
 # while testing on local machine, use:
 # DATABASE_URL=postgresql+psycopg://user:password@localhost:5432/dbname
+
+RAZORPAY_KEY_ID=<put key here>
+RAZORPAY_KEY_SECRET=<put secret here>
