@@ -20,6 +20,11 @@ class User(Base):
     phone = Column(String, nullable=False)
     upi_id = Column(String, nullable=False)
 
+    # # *********************************************************************************
+    # razorpay_contact_id = Column(String, nullable=True)   # Razorpay Contact ID
+    # fund_account_id = Column(String, nullable=True)       # Razorpay Fund Account ID
+    # # *********************************************************************************
+
     posts = relationship("PostItems", back_populates="user")
 
 

@@ -1,0 +1,6 @@
+IMPLEMENTING PAYOUT:
+
+auth.py >> 29, 88
+model.py >> 23
+main.py >> 19, 376
+.env >> razorpayx keys
