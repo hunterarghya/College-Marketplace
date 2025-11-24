@@ -1,7 +1,7 @@
 # 🛒 College Marketplace
 
-A clean, fast, and modern **Marketplace web application** built with **FastAPI**, using **JWT authentication**, **PostgreSQL** as database, and **ImageKit** for media storage.  
-Users can create accounts, post items for sale, manage their listings, upload images, view items on sale, buy items and securely process payments—all inside a lightweight backend.
+A **Marketplace web application** built with **FastAPI**, using **JWT authentication**, **PostgreSQL** as database, and **ImageKit** for media storage.  
+Users can create accounts, post items for sale, manage their listings, upload images, view items on sale, buy items and securely process payments.
 
 🚀 **Live Marketplace Demo:** [Try it here](https://college-marketplace-6wry.onrender.com)
 
@@ -25,21 +25,16 @@ Users can create accounts, post items for sale, manage their listings, upload im
 - Manage your own posts (edit / delete)
 - User profile page
 
-### 💳 Payments
+## 💳 Payments (Razorpay Integration)
 
-- Integrated simple payment system  
-  (supports mock payments or real gateways depending on configuration)
+- Integration with **Razorpay Payment Gateway**
+- Backend Razorpay order creation
+- Secure signature verification
+- Payment status update & redirection
 
 ### 🖼️ UI
 
 - Fully functional HTML templates
-- Pages included:
-  - `login.html`
-  - `register.html`
-  - `upload.html`
-  - `my_posts.html`
-  - `profile.html`
-  - `ny_posts.html`
 
 ### 🗄️ Database
 
@@ -55,35 +50,6 @@ Production-ready Dockerfile + docker-compose for:
 
 ---
 
-## 📁 Project Structure
-
-```
-app/
-├── static/               # HTML templates
-│   ├── login.html
-│   ├── register.html
-│   ├── upload.html
-│   ├── my_posts.html
-│   ├── profile.html
-│   └── ny_posts.html
-│
-├── __init__.py
-├── main.py               # App entrypoint
-├── auth.py               # JWT auth logic
-├── crud.py               # Database operations
-├── database.py           # DB connections
-├── images.py             # ImageKit utilities
-├── model.py              # SQLAlchemy models
-└── schemas.py            # Pydantic schemas
-
-docker-compose.yml
-Dockerfile
-requirements.txt
-README.md
-```
-
----
-
 ## ⚙️ Tech Stack
 
 - **FastAPI** – Backend web framework
@@ -94,7 +60,7 @@ README.md
 - **ImageKit** – External storage for images
 - **Uvicorn** – ASGI server
 - **Docker & Docker Compose** – Deployment
-- **python-multipart** – File uploads
+- **Razorpay** – Payments
 
 ---
 
@@ -123,7 +89,7 @@ pip install -r requirements.txt
 
 ### 4️⃣ Set up environment variables
 
-Set up your environment varialbles in `.env` as in `.env.example`
+Set up your environment varialbles in `.env` as in `env_example.txt`
 
 ### 5️⃣ Run the server
 
