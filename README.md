@@ -3,6 +3,8 @@
 A clean, fast, and modern **Marketplace web application** built with **FastAPI**, using **JWT authentication**, **PostgreSQL** as database, and **ImageKit** for media storage.  
 Users can create accounts, post items for sale, manage their listings, upload images, view items on sale, buy items and securely process payments—all inside a lightweight backend.
 
+🚀 **Live Marketplace Demo:** [Try it here](https://college-marketplace-6wry.onrender.com)
+
 ---
 
 ## ✨ Features
