@@ -16,7 +16,7 @@ class PostUpdate(BaseModel):
     price: Optional[int] = None
     location: Optional[str] = None
 
-# User schemas
+# User schemas  
 class UserCreate(BaseModel):
     email: EmailStr
     password: str

@@ -1,10 +1,22 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Processing Payment</title>
+    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    <h2>Redirecting to Razorpay...</h2>
+    <header>
+      <div class="header-logo">OLX CGEC</div>
+    </header>
+
+    <div class="container">
+      <div style="text-align: center; padding: 3rem">
+        <h2>Processing Payment...</h2>
+        <p>Redirecting to payment gateway...</p>
+      </div>
+    </div>
 
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script>
@@ -39,7 +51,7 @@
             });
         },
 
-        theme: { color: "#3399cc" },
+        theme: { color: "#4a9fd8" },
       };
 
       const rzp = new Razorpay(options);

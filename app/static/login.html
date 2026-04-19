@@ -2,16 +2,36 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - College Marketplace</title>
+    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    <h1>College Marketplace</h1>
-    <h2>Login</h2>
-    <label>Email: <input id="email" type="email" /></label><br />
-    <label>Password: <input id="password" type="password" /></label><br />
-    <button id="loginBtn">Login</button>
-    <button id="toRegister">Register</button>
-    <p id="msg"></p>
+    <header>
+      <div class="header-logo">OLX CGEC</div>
+    </header>
+    <div class="container">
+      <div class="auth-form">
+        <h2>Login</h2>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="Enter your email" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+          />
+        </div>
+        <div id="msg" class="message"></div>
+        <div class="button-group">
+          <button id="loginBtn">Login</button>
+          <button id="toRegister" class="secondary">Register</button>
+        </div>
+      </div>
+    </div>
 
     <script>
       const apiBase = "";

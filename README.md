@@ -53,7 +53,7 @@ Production-ready Dockerfile + docker-compose for:
 ## ⚙️ Tech Stack
 
 - **FastAPI** – Backend web framework
-- **Python**
+- **Python** – Core backend language
 - **JWT Auth** – Secure token-based login
 - **SQLAlchemy** – ORM for database operations
 - **PostgreSQL** – Databases
@@ -126,7 +126,15 @@ Requires:
 
 ### View all posts
 
-GET `/posts`
+GET `/feed`
+
+### Edit a post
+
+PATCH `/post/{post_id}`
+
+### Delete a post
+
+DELETE `/post/{post_id}`
 
 ---
 

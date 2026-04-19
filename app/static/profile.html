@@ -2,13 +2,24 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Profile - College Marketplace</title>
+    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    <button onclick="location.href='/static/feed.html'">Back</button>
-    <h1>Profile</h1>
+    <header>
+      <div class="header-logo">OLX CGEC</div>
+      <nav class="header-nav">
+        <button class="nav-btn" onclick="location.href = '/static/feed.html'">
+          Back to Feed
+        </button>
+      </nav>
+    </header>
 
-    <div id="info" style="font-size: 18px; line-height: 1.6"></div>
+    <div class="container">
+      <h1>My Profile</h1>
+      <div class="profile-info" id="info"></div>
+    </div>
 
     <script>
       const apiBase = "";
@@ -23,7 +34,8 @@
         });
 
         if (!res.ok) {
-          document.getElementById("info").innerText = "Failed to load profile.";
+          document.getElementById("info").innerHTML =
+            '<div class="empty-state"><p>Failed to load profile.</p></div>';
           return;
         }
 
@@ -31,11 +43,10 @@
 
         // Render nicely formatted profile info
         const html = `
-          <div><strong>ID:</strong> ${me.id}</div>
-          <div><strong>Name:</strong> ${me.name || "N/A"}</div>
-          <div><strong>Email:</strong> ${me.email || "N/A"}</div>
-          <div><strong>Phone:</strong> ${me.phone || "N/A"}</div>
-          <div><strong>UPI ID:</strong> ${me.upi_id || "N/A"}</div>
+          <div class="info-item"><span class="info-label">Name:</span> <span class="info-value">${me.name || "N/A"}</span></div>
+          <div class="info-item"><span class="info-label">Email:</span> <span class="info-value">${me.email || "N/A"}</span></div>
+          <div class="info-item"><span class="info-label">Phone:</span> <span class="info-value">${me.phone || "N/A"}</span></div>
+          <div class="info-item"><span class="info-label">UPI ID:</span> <span class="info-value">${me.upi_id || "N/A"}</span></div>
         `;
 
         document.getElementById("info").innerHTML = html;

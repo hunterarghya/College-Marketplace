@@ -2,19 +2,48 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Register</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Register - College Marketplace</title>
+    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    <h1>College Marketplace</h1>
-    <h2>Register</h2>
-    <label>Email: <input id="email" type="email" /></label><br />
-    <label>Password: <input id="password" type="password" /></label><br />
-    <label>Name: <input id="name" type="text" /></label><br />
-    <label>Phone: <input id="phone" type="text" /></label><br />
-    <label>UPI ID: <input id="upi" type="text" /></label><br />
-    <button id="registerBtn">Register</button>
-    <button id="toLogin">Back to Login</button>
-    <p id="msg"></p>
+    <header>
+      <div class="header-logo">OLX CGEC</div>
+    </header>
+    <div class="container">
+      <div class="auth-form">
+        <h2>Create Account</h2>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" type="email" placeholder="Enter your email" />
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            type="password"
+            placeholder="Enter your password"
+          />
+        </div>
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input id="name" type="text" placeholder="Enter your full name" />
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input id="phone" type="text" placeholder="Enter your phone number" />
+        </div>
+        <div class="form-group">
+          <label for="upi">UPI ID</label>
+          <input id="upi" type="text" placeholder="Enter your UPI ID" />
+        </div>
+        <div id="msg" class="message"></div>
+        <div class="button-group">
+          <button id="registerBtn">Register</button>
+          <button id="toLogin" class="secondary">Back to Login</button>
+        </div>
+      </div>
+    </div>
 
     <script>
       const apiBase = "";

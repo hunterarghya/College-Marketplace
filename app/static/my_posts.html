@@ -2,15 +2,24 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>My Items</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Items - College Marketplace</title>
+    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    <button onclick="location.href='/static/feed.html'">
-      Back to Marketplace
-    </button>
-    <h1>My Items</h1>
+    <header>
+      <div class="header-logo">OLX CGEC</div>
+      <nav class="header-nav">
+        <button class="nav-btn" onclick="location.href = '/static/feed.html'">
+          Back to Feed
+        </button>
+      </nav>
+    </header>
 
-    <div id="mine"></div>
+    <div class="container">
+      <h1>My Items</h1>
+      <div id="mine" class="posts-container"></div>
+    </div>
 
     <script>
       const apiBase = "";
@@ -45,32 +54,35 @@
           if (!isMine) return;
 
           const div = document.createElement("div");
-          div.style.border = "1px solid #000";
-          div.style.margin = "8px";
-          div.style.padding = "8px";
+          div.className = "post";
 
           div.innerHTML = `
-      <h3>${p.title}</h3>
-      ${p.url ? `<img src="${p.url}" style="max-width:200px;">` : ""}
-      <p>${p.description || ""}</p>
-      <div>Price: ${p.price}</div>
-      <div>Location: ${p.location}</div>
-      <div>Status: ${p.status}</div>
-      <div>Created: ${p.created_at}</div>
+      ${p.url ? `<img src="${p.url}" class="post-image" alt="${p.title || "Product"}">` : `<div class="post-image"></div>`}
+      <div class="post-body">
+        <h3 class="post-title">${p.title || "Untitled"}</h3>
+        <p class="post-description">${p.description || ""}</p>
+        <div class="post-meta">
+          <div><strong>Price:</strong> <span class="price">₹${p.price}</span></div>
+          <div><strong>Location:</strong> ${p.location}</div>
+          <div><strong>Status:</strong> <span class="status-badge status-${p.status.toLowerCase()}">${p.status}</span></div>
+          <div><strong>Posted:</strong> ${p.created_at}</div>
+        </div>
+      </div>
+      <div class="post-actions">
+        <button id="edit-${p.id}" class="edit-btn">Edit</button>
+        <button id="delete-${p.id}" class="delete-btn secondary">Delete</button>
+      </div>
     `;
 
           // EDIT BUTTON
-          const editBtn = document.createElement("button");
-          editBtn.innerText = "Edit";
+          const editBtn = div.querySelector(".edit-btn");
           editBtn.onclick = () =>
             (location.href = "/static/edit_post.html?id=" + (p.id || p.uuid));
-          div.appendChild(editBtn);
 
           // DELETE BUTTON
-          const delBtn = document.createElement("button");
-          delBtn.innerText = "Delete";
+          const delBtn = div.querySelector(".delete-btn");
           delBtn.onclick = async () => {
-            if (!confirm("Delete this post?")) return;
+            if (!confirm("Delete this item?")) return;
             const r = await fetch(apiBase + "/post/" + (p.id || p.uuid), {
               method: "DELETE",
               headers: authHeaders(),
@@ -79,7 +91,6 @@
             alert("Deleted successfully!");
             load();
           };
-          div.appendChild(delBtn);
 
           mineDiv.appendChild(div);
         });

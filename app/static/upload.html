@@ -2,25 +2,77 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Upload Post</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sell Item - College Marketplace</title>
+    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    <h1>Sell an item</h1>
-    <form id="uploadForm">
-      <label>Title: <input name="title" required /></label><br />
-      <label>Description: <input name="description" /></label><br />
-      <label>Price: <input name="price" type="number" required /></label><br />
-      <label>Location: <input name="location" /></label><br />
-      <label
-        >Image:
-        <input name="file" type="file" accept="image/*" required /></label
-      ><br />
-      <button type="submit">Upload</button>
-    </form>
-    <button onclick="location.href='/static/feed.html'">
-      Back to Marketplace
-    </button>
-    <p id="msg"></p>
+    <header>
+      <div class="header-logo">OLX CGEC</div>
+      <nav class="header-nav">
+        <button class="nav-btn" onclick="location.href = '/static/feed.html'">
+          Back to Feed
+        </button>
+      </nav>
+    </header>
+
+    <div class="container">
+      <div class="upload-form">
+        <h2>Sell an Item</h2>
+        <form id="uploadForm">
+          <div class="form-group">
+            <label for="title">Title</label>
+            <input
+              id="title"
+              name="title"
+              type="text"
+              placeholder="Product name"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <input
+              id="description"
+              name="description"
+              type="text"
+              placeholder="Describe your product"
+            />
+          </div>
+          <div class="form-group">
+            <label for="price">Price (₹)</label>
+            <input
+              id="price"
+              name="price"
+              type="number"
+              placeholder="Enter price"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="location">Location</label>
+            <input
+              id="location"
+              name="location"
+              type="text"
+              placeholder="Your city/area"
+            />
+          </div>
+          <div class="form-group">
+            <label for="file">Product Image</label>
+            <input
+              id="file"
+              name="file"
+              type="file"
+              accept="image/*"
+              required
+            />
+          </div>
+          <div id="msg" class="message"></div>
+          <button type="submit">Upload Item</button>
+        </form>
+      </div>
+    </div>
 
     <script>
       const apiBase = "";

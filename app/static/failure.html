@@ -1,10 +1,25 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Payment Failed</title>
+    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    <h2>Payment Failed!</h2>
-    <button onclick="location.href='/static/feed.html'">Try Again</button>
+    <header>
+      <div class="header-logo">OLX CGEC</div>
+    </header>
+
+    <div class="container">
+      <div class="failure-container">
+        <div class="failure-icon">✕</div>
+        <h2>Payment Failed</h2>
+        <p>There was an issue processing your payment. Please try again.</p>
+        <button onclick="location.href = '/static/feed.html'" class="nav-btn">
+          Back to Marketplace
+        </button>
+      </div>
+    </div>
   </body>
 </html>

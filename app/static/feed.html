@@ -2,18 +2,25 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>Marketplace</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Marketplace - Feed</title>
+    <link rel="stylesheet" href="/static/style.css" />
   </head>
   <body>
-    <div>
-      <button id="logoutBtn">Logout</button>
-      <button id="sellBtn">Sell</button>
-      <button id="myPostsBtn">My Items</button>
-      <button id="profileBtn">Profile</button>
-    </div>
+    <header>
+      <div class="header-logo">OLX CGEC</div>
+      <nav class="header-nav">
+        <button class="nav-btn" id="profileBtn">Profile</button>
+        <button class="nav-btn" id="myPostsBtn">My Items</button>
+        <button class="nav-btn" id="sellBtn">Sell</button>
+        <button class="nav-btn" id="logoutBtn">Logout</button>
+      </nav>
+    </header>
 
-    <h1>Marketplace</h1>
-    <div id="posts"></div>
+    <div class="container">
+      <h1>Featured Items</h1>
+      <div id="posts" class="posts-container"></div>
+    </div>
 
     <script>
       const apiBase = "";
@@ -68,27 +75,31 @@
           const sellernum = p.user?.phone || "Unknown";
 
           const div = document.createElement("div");
-          div.style.border = "1px solid #000";
-          div.style.margin = "8px";
-          div.style.padding = "8px";
+          div.className = "post";
 
           div.innerHTML = `
-        <h3>${p.title || "Untitled"}</h3>
-        <div>By: ${sellerName}</div>
-        ${p.url ? `<img src="${p.url}" style="max-width:200px;">` : ""}
-        <p>${p.description || ""}</p>
-        <div>Price: ${p.price ?? ""}</div>
-        <div>Location: ${p.location ?? ""}</div>
-        <div>Phone: ${sellernum}</div>
-        <div>Created: ${p.created_at ?? ""}</div>
-        <div>Status: ${p.status ?? "unknown"}</div>
+        ${p.url ? `<img src="${p.url}" class="post-image" alt="${p.title || "Product"}">` : `<div class="post-image"></div>`}
+        <div class="post-body">
+          <h3 class="post-title">${p.title || "Untitled"}</h3>
+          <div class="seller-info">
+            <strong>Seller:</strong> ${sellerName}<br>
+            <strong>Phone:</strong> ${sellernum}
+          </div>
+          <p class="post-description">${p.description || ""}</p>
+          <div class="post-meta">
+            <div><strong>Price:</strong> <span class="price">₹${p.price ?? "N/A"}</span></div>
+            <div><strong>Location:</strong> ${p.location ?? "N/A"}</div>
+            <div><strong>Posted:</strong> ${p.created_at ?? "N/A"}</div>
+          </div>
+        </div>
+        <div class="post-actions">
+          <button id="btn-${p.id}" class="buy-btn">Buy</button>
+        </div>
       `;
 
           // BUY BUTTON
-          const buyBtn = document.createElement("button");
-          buyBtn.innerText = "Buy";
+          const buyBtn = div.querySelector(".buy-btn");
           buyBtn.onclick = () => buyPost(p.id);
-          div.appendChild(buyBtn);
 
           container.appendChild(div);
         });
